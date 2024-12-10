@@ -1,4 +1,4 @@
-# Infinite scroll for Vue 3
+# Infinite carousel for Vue 3
 This package allows you to implement infinite scrolling for any of your Vue components.
 
 
