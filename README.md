@@ -9,12 +9,12 @@ This package allows you to implement infinite scrolling for any of your Vue comp
 ### Use globally:
 In `main.ts `
 ```js
-import {VueInfiniteScroll, VueInfiniteScrollItem} from 'vue-infinite-carousel'
+import { InfiniteCarousel, InfiniteCarouselItem } from "vue-infinite-carousel";
 import "vue-infinite-carousel/dist/vue-infinite-carousel.css" 
 
 const app = createApp(App);
-app.component("VueInfiniteScroll", VueInfiniteScroll);
-app.component("VueInfiniteScrollItem", VueInfiniteScrollItem);
+app.component("InfiniteCarousel", InfiniteCarousel);
+app.component("InfiniteCarouselItem", InfiniteCarouselItem);
 app.mount("#app");
 ```
 ```html
@@ -25,19 +25,19 @@ const items = ref(["Item 1", "Item 2", "Item 3"]);
 </script>
 
 <template>
-  <VueInfiniteScroll :gap="20" :speed="50">
+  <InfiniteCarousel :gap="20" :speed="50">
     <template v-for="item in items">
-      <VueInfiniteScrollItem>
+      <InfiniteCarouselItem>
         {{ item }}
-      </VueInfiniteScrollItem>
+      </InfiniteCarouselItem>
     </template>
-  </VueInfiniteScroll>
+  </InfiniteCarousel>
 </template>
 ```
 ### Use locally:
 ```html
 <script setup>
-import {VueInfiniteScroll, VueInfiniteScrollItem} from 'vue-infinite-carousel'
+import {InfiniteCarousel, InfiniteCarouselItem} from 'vue-infinite-carousel'
 import "vue-infinite-carousel/dist/vue-infinite-carousel.css" 
 // ...
 const items = ref(["Item 1", "Item 2", "Item 3"]);
@@ -45,13 +45,13 @@ const items = ref(["Item 1", "Item 2", "Item 3"]);
 </script>
 
 <template>
-  <VueInfiniteScroll :gap="20" :speed="50">
+  <InfiniteCarousel :gap="20" :speed="50">
     <template v-for="item in items">
-      <VueInfiniteScrollItem>
+      <InfiniteCarouselItem>
         {{ item }}
-      </VueInfiniteScrollItem>
+      </InfiniteCarouselItem>
     </template>
-  </VueInfiniteScroll>
+  </InfiniteCarousel>
 </template>
 ```
 
