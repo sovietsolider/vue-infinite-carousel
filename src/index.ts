@@ -1,3 +1,4 @@
-import ScrollComponent from "./InfiniteScroll.vue";
+import InfiniteCarousel from "./InfiniteCarousel.vue";
+import InfiniteCarouselItem from "./InfiniteCarouselItem.vue";
 
-export default ScrollComponent;
+export {InfiniteCarousel, InfiniteCarouselItem};

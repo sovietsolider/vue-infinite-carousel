@@ -29,8 +29,8 @@ const translateX = ref(0);
 const copySize = ref(1)
 
 const calculateCopySize = () => {
-  const containerWidth = (document.querySelector('.scroll-container') as HTMLDivElement).offsetWidth;
-  const contentWidth = (document.querySelector('.scroll-content') as HTMLDivElement).offsetWidth;
+  const containerWidth = (container.value as HTMLDivElement).offsetWidth;
+  const contentWidth = (scrollContent.value as HTMLDivElement).offsetWidth;
   console.log(containerWidth, contentWidth)
 
   if(contentWidth === 0) {

@@ -12,7 +12,8 @@
 
 <script setup>
 import { ref } from "vue";
-import VueInfiniteScrollItem from '../src/InfiniteScrollItem.vue'
+import VueInfiniteScrollItem from '../src/InfiniteCarouselItem.vue'
+
 
 const items = ref(["Item 1", "Item 2", "Item 3"]);
 </script>

@@ -1,14 +1,13 @@
 {
   "name": "vue-infinite-carousel",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
-  "description": "Infinite scroll for any Vue 3 component",
+  "description": "Infinite carousel for any Vue 3 component",
   "homepage": "https://github.com/sovietsolider/vue-infinite-carousel",
-  "exports": {
-    "import": "./dist/vue-infinite-scroll-components.es.js",
-    "require": "./dist/vue-infinite-scroll-components.umd.js"
-  },
+  "main": "dist/vue-infinite-scroll-component.umd.js",
+  "module": "dist/vue-infinite-scroll-component.es.js",
   "types": "dist/index.d.ts",
+  
   "scripts": {
     "dev": "vite",
     "build": "vite build"
@@ -18,8 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
-    "vue": "^3.5.13",
-    "vue-infinite-carousel": "^1.0.0"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
     "vite": "^6.0.3",
