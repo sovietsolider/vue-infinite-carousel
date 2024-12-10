@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, toRefs } from "vue";
+import { ref, computed, onMounted, onUnmounted, toRefs } from "vue";
 
 interface Props {
   speed?: number;
@@ -31,7 +31,6 @@ const copySize = ref(1)
 const calculateCopySize = () => {
   const containerWidth = (container.value as HTMLDivElement).offsetWidth;
   const contentWidth = (scrollContent.value as HTMLDivElement).offsetWidth;
-  console.log(containerWidth, contentWidth)
 
   if(contentWidth === 0) {
     return 1
