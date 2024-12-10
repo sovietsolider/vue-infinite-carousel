@@ -12,7 +12,7 @@
     "dev": "vite",
     "build": "vite build"
   },
-  "keywords": [],
+  "keywords": ["vue", "vue3", "carousel", "scroll", "javascript", "typescript"],
   "author": "Anatolii Golikov",
   "license": "ISC",
   "dependencies": {
