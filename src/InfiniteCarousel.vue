@@ -3,50 +3,62 @@
     <div
       class="scroll-content"
       ref="scrollContent"
-      :style="{ transform: `translateX(${translateX}px)` }"
+      :style="{ transform: `translateX(${translateX}px)`, gap: gapCSS }"
     >
-      <slot v-for="index in copySize"></slot>
+      <slot v-for="index in copySize" :key="index" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, toRefs } from "vue";
+import { ref, computed, onMounted, onUnmounted, toRefs, nextTick } from "vue";
 
 interface Props {
   speed?: number;
   gap?: number;
+  direction?: "left" | "right";
 }
 
-const props = withDefaults(defineProps<Props>(), {gap: 20, speed: 50});
-const { speed, gap } = toRefs(props);
-
+const props = withDefaults(defineProps<Props>(), {
+  gap: 20,
+  speed: 50,
+  direction: "left",
+});
+const { speed, gap, direction } = toRefs(props);
 
 // Refs
-const container = ref<HTMLDivElement | null>(null);
-const scrollContent = ref<HTMLDivElement | null>(null);
+const container = ref<HTMLElement | null>(null);
+const scrollContent = ref<HTMLElement | null>(null);
 const translateX = ref(0);
-const copySize = ref(1)
+const copySize = ref(1);
 
+// Compute copies needed to fill twice the container width
 const calculateCopySize = () => {
-  const containerWidth = (container.value as HTMLDivElement).offsetWidth;
-  const contentWidth = (scrollContent.value as HTMLDivElement).offsetWidth;
-
-  if(contentWidth === 0) {
-    return 1
-  }
-  return Math.ceil(containerWidth / contentWidth) * 2
-}
+  const containerWidth = container.value?.offsetWidth || 0;
+  const singleWidth = scrollContent.value?.children[0]?.clientWidth || 0;
+  if (!singleWidth) return 1;
+  const needed = Math.ceil(containerWidth / singleWidth);
+  return needed * 2;
+};
 
 let animationFrame: number;
 
 const startScrolling = () => {
   const step = () => {
-    translateX.value -= speed.value / 60; // (~60 FPS)
+    const move = speed.value / 60;
+    translateX.value += direction.value === "left" ? -move : move;
 
     const contentWidth = scrollContent.value?.offsetWidth || 0;
-    if (Math.abs(translateX.value) >= contentWidth / 2) {
-      translateX.value += contentWidth / 2;
+    const threshold = contentWidth / 2;
+
+    if (direction.value === "left") {
+      if (Math.abs(translateX.value) >= threshold) {
+        translateX.value += threshold;
+      }
+    } else {
+      if (translateX.value >= threshold) {
+        translateX.value -= threshold;
+      }
     }
 
     animationFrame = requestAnimationFrame(step);
@@ -59,12 +71,19 @@ const stopScrolling = () => {
   cancelAnimationFrame(animationFrame);
 };
 
-const gapCSS = computed(() => {
-  return props.gap + 'px'
-})
+const gapCSS = computed(() => `${gap.value}px`);
 
-onMounted(() => {
-  copySize.value = calculateCopySize()
+onMounted(async () => {
+  // Wait for slot content to render
+  await nextTick();
+  copySize.value = calculateCopySize();
+
+  // For right direction, start from middle to have items on both sides
+  const contentWidth = scrollContent.value?.offsetWidth || 0;
+  if (direction.value === "right") {
+    translateX.value = -contentWidth / 2;
+  }
+
   startScrolling();
 });
 
@@ -78,7 +97,6 @@ onUnmounted(() => {
   width: 100%;
   overflow: hidden;
   position: relative;
-  height: 50px;
   z-index: 10;
 }
 
@@ -86,12 +104,10 @@ onUnmounted(() => {
   display: flex;
   white-space: nowrap;
   will-change: transform;
-  width: fit-content;
 }
 
 ::v-deep(.scroll-item) {
   flex-shrink: 0;
-  padding-right: v-bind("gapCSS");
   white-space: nowrap;
 }
 </style>

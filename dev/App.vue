@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VueInfiniteScroll :gap="20">
+    <VueInfiniteScroll :gap="20" :speed="10" direction="left">
       <template v-for="item in items">
         <VueInfiniteScrollItem>
           {{ item }}
@@ -12,8 +12,7 @@
 
 <script setup>
 import { ref } from "vue";
-import VueInfiniteScrollItem from '../src/InfiniteCarouselItem.vue'
-
+import VueInfiniteScrollItem from "../src/InfiniteCarouselItem.vue";
 
 const items = ref(["Item 1", "Item 2", "Item 3"]);
 </script>
