@@ -1,62 +1,70 @@
-import { defineComponent as y, useCssVars as x, toRefs as W, ref as c, computed as k, onMounted as F, onUnmounted as I, openBlock as d, createElementBlock as f, createElementVNode as $, normalizeStyle as z, Fragment as A, renderList as M, renderSlot as _ } from "vue";
-const q = /* @__PURE__ */ y({
+import { defineComponent as F, useCssVars as I, toRefs as $, computed as h, ref as i, onMounted as z, nextTick as A, onUnmounted as T, openBlock as v, createElementBlock as p, createElementVNode as q, normalizeStyle as w, Fragment as B, renderList as E, renderSlot as g } from "vue";
+const M = /* @__PURE__ */ F({
   __name: "InfiniteCarousel",
   props: {
     speed: { default: 50 },
-    gap: { default: 20 }
+    gap: { default: 20 },
+    direction: { default: "left" },
+    initialTranslate: { default: 0 }
   },
-  setup(t) {
-    x((e) => ({
-      "7d307148": S.value
+  setup(n) {
+    I((e) => ({
+      "11a3f518": x.value
     }));
-    const o = t, { speed: s, gap: p } = W(o), r = c(null), l = c(null), a = c(0), m = c(1), h = () => {
-      const e = r.value.offsetWidth, n = l.value.offsetWidth;
-      return n === 0 ? 1 : Math.ceil(e / n) * 2;
+    const l = n, { speed: c, gap: u, direction: o } = $(l), y = h(() => o.value === "right" ? 1 : -1), f = i(null), r = i(null), t = i(l.initialTranslate), m = i(1), S = () => {
+      if (!f.value || !r.value) return 1;
+      const e = f.value.offsetWidth, a = r.value.offsetWidth;
+      return a === 0 ? 1 : Math.ceil(e / a) * 2;
     };
-    let i;
-    const C = () => {
+    let d;
+    const k = () => {
       const e = () => {
-        var u;
-        a.value -= s.value / 60;
-        const n = ((u = l.value) == null ? void 0 : u.offsetWidth) || 0;
-        Math.abs(a.value) >= n / 2 && (a.value += n / 2), i = requestAnimationFrame(e);
+        var _;
+        t.value += y.value * (c.value / 60);
+        const s = (((_ = r.value) == null ? void 0 : _.offsetWidth) || 0) / 2;
+        o.value === "left" && t.value <= -s && (t.value += s), o.value === "right" && t.value >= 0 && (t.value -= s), d = requestAnimationFrame(e);
       };
-      i = requestAnimationFrame(e);
-    }, g = () => {
-      cancelAnimationFrame(i);
-    }, S = k(() => o.gap + "px");
-    return F(() => {
-      m.value = h(), C();
-    }), I(() => {
-      g();
-    }), (e, n) => (d(), f("div", {
+      d = requestAnimationFrame(e);
+    }, W = () => cancelAnimationFrame(d), x = h(() => u.value + "px");
+    return z(() => {
+      m.value = S(), A(() => {
+        var e;
+        if (o.value === "right") {
+          const a = ((e = r.value) == null ? void 0 : e.offsetWidth) || 0;
+          t.value = -a / 2;
+        }
+        k();
+      });
+    }), T(() => {
+      W();
+    }), (e, a) => (v(), p("div", {
       class: "scroll-container",
       ref_key: "container",
-      ref: r
+      ref: f
     }, [
-      $("div", {
+      q("div", {
         class: "scroll-content",
         ref_key: "scrollContent",
-        ref: l,
-        style: z({ transform: `translateX(${a.value}px)` })
+        ref: r,
+        style: w({ transform: `translateX(${t.value}px)` })
       }, [
-        (d(!0), f(A, null, M(m.value, (u) => _(e.$slots, "default", {}, void 0, !0)), 256))
+        (v(!0), p(B, null, E(m.value, (s) => g(e.$slots, "default", { key: s }, void 0, !0)), 128))
       ], 4)
     ], 512));
   }
-}), v = (t, o) => {
-  const s = t.__vccOpts || t;
-  for (const [p, r] of o)
-    s[p] = r;
-  return s;
-}, b = /* @__PURE__ */ v(q, [["__scopeId", "data-v-a8cc3ec3"]]), B = {}, E = { class: "scroll-item" };
-function V(t, o) {
-  return d(), f("div", E, [
-    _(t.$slots, "default")
+}), C = (n, l) => {
+  const c = n.__vccOpts || n;
+  for (const [u, o] of l)
+    c[u] = o;
+  return c;
+}, O = /* @__PURE__ */ C(M, [["__scopeId", "data-v-1e6af309"]]), V = {}, X = { class: "scroll-item" };
+function L(n, l) {
+  return v(), p("div", X, [
+    g(n.$slots, "default")
   ]);
 }
-const L = /* @__PURE__ */ v(B, [["render", V]]);
+const R = /* @__PURE__ */ C(V, [["render", L]]);
 export {
-  b as InfiniteCarousel,
-  L as InfiniteCarouselItem
+  O as InfiniteCarousel,
+  R as InfiniteCarouselItem
 };

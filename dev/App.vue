@@ -1,6 +1,18 @@
 <template>
   <div>
-    <VueInfiniteScroll :gap="20" :speed="10" direction="left">
+    <VueInfiniteScroll :gap="20" :speed="40" direction="left">
+      <template v-for="item in items">
+        <VueInfiniteScrollItem>
+          {{ item }}
+        </VueInfiniteScrollItem>
+      </template>
+    </VueInfiniteScroll>
+    <VueInfiniteScroll
+      :gap="20"
+      :speed="40"
+      direction="left"
+      :initialTranslate="0"
+    >
       <template v-for="item in items">
         <VueInfiniteScrollItem>
           {{ item }}

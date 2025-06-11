@@ -1,6 +1,6 @@
 {
   "name": "vue-infinite-carousel",
-  "version": "1.0.4",
+  "version": "1.0.8",
   "type": "module",
   "description": "Infinite carousel for any Vue 3 component",
   "homepage": "https://github.com/sovietsolider/vue-infinite-carousel",

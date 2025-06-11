@@ -3,88 +3,100 @@
     <div
       class="scroll-content"
       ref="scrollContent"
-      :style="{ transform: `translateX(${translateX}px)`, gap: gapCSS }"
+      :style="{ transform: `translateX(${translateX}px)` }"
     >
-      <slot v-for="index in copySize" :key="index" />
+      <slot v-for="index in copySize" :key="index"></slot>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, toRefs, nextTick } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onUnmounted,
+  toRefs,
+  withDefaults,
+  defineProps,
+  nextTick,
+} from "vue";
 
 interface Props {
   speed?: number;
   gap?: number;
   direction?: "left" | "right";
+  /** Начальное смещение в пикселях */
+  initialTranslate?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   gap: 20,
   speed: 50,
   direction: "left",
+  initialTranslate: 0,
 });
-const { speed, gap, direction } = toRefs(props);
 
-// Refs
-const container = ref<HTMLElement | null>(null);
-const scrollContent = ref<HTMLElement | null>(null);
-const translateX = ref(0);
+// Деструктурируем все props, включая initialTranslate
+const { speed, gap, direction, initialTranslate } = toRefs(props);
+
+/** Множитель направления: влево −1, вправо +1 */
+const directionFactor = computed(() => (direction.value === "right" ? 1 : -1));
+
+const container = ref<HTMLDivElement | null>(null);
+const scrollContent = ref<HTMLDivElement | null>(null);
+/** Текущее смещение, стартуем с initialTranslate */
+const translateX = ref(initialTranslate.value);
 const copySize = ref(1);
 
-// Compute copies needed to fill twice the container width
 const calculateCopySize = () => {
-  const containerWidth = container.value?.offsetWidth || 0;
-  const singleWidth = scrollContent.value?.children[0]?.clientWidth || 0;
-  if (!singleWidth) return 1;
-  const needed = Math.ceil(containerWidth / singleWidth);
-  return needed * 2;
+  if (!container.value || !scrollContent.value) return 1;
+  const cw = container.value.offsetWidth;
+  const sw = scrollContent.value.offsetWidth;
+  if (sw === 0) return 1;
+  // столько копий, чтобы контент дважды перекрывал контейнер
+  return Math.ceil(cw / sw) * 2;
 };
 
 let animationFrame: number;
-
 const startScrolling = () => {
   const step = () => {
-    const move = speed.value / 60;
-    translateX.value += direction.value === "left" ? -move : move;
+    translateX.value += directionFactor.value * (speed.value / 60);
+    const totalW = scrollContent.value?.offsetWidth || 0;
+    const half = totalW / 2;
+    const offset = initialTranslate.value;
 
-    const contentWidth = scrollContent.value?.offsetWidth || 0;
-    const threshold = contentWidth / 2;
-
-    if (direction.value === "left") {
-      if (Math.abs(translateX.value) >= threshold) {
-        translateX.value += threshold;
-      }
-    } else {
-      if (translateX.value >= threshold) {
-        translateX.value -= threshold;
-      }
+    // «Заворачиваем» с учётом initialTranslate
+    if (direction.value === "left" && translateX.value <= -half + offset) {
+      translateX.value += half;
+    }
+    if (direction.value === "right" && translateX.value >= offset) {
+      translateX.value -= half;
     }
 
     animationFrame = requestAnimationFrame(step);
   };
-
   animationFrame = requestAnimationFrame(step);
 };
 
-const stopScrolling = () => {
-  cancelAnimationFrame(animationFrame);
-};
+const stopScrolling = () => cancelAnimationFrame(animationFrame);
+const gapCSS = computed(() => gap.value + "px");
 
-const gapCSS = computed(() => `${gap.value}px`);
-
-onMounted(async () => {
-  // Wait for slot content to render
-  await nextTick();
+onMounted(() => {
   copySize.value = calculateCopySize();
+  nextTick(() => {
+    const totalW = scrollContent.value?.offsetWidth || 0;
+    const half = totalW / 2;
 
-  // For right direction, start from middle to have items on both sides
-  const contentWidth = scrollContent.value?.offsetWidth || 0;
-  if (direction.value === "right") {
-    translateX.value = -contentWidth / 2;
-  }
+    // Устанавливаем стартовое смещение с учётом направления
+    if (direction.value === "right") {
+      translateX.value = -half + initialTranslate.value;
+    } else {
+      translateX.value = initialTranslate.value;
+    }
 
-  startScrolling();
+    startScrolling();
+  });
 });
 
 onUnmounted(() => {
@@ -104,10 +116,15 @@ onUnmounted(() => {
   display: flex;
   white-space: nowrap;
   will-change: transform;
+  width: fit-content;
 }
 
+/* Элементы прокрутки должны иметь класс scroll-item */
 ::v-deep(.scroll-item) {
   flex-shrink: 0;
+  /* Лучше через inline-стиль или CSS-переменную,
+     но оставим ваш вариант с v-bind */
+  padding-right: v-bind("gapCSS");
   white-space: nowrap;
 }
 </style>
